@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE grammar PUBLIC "-//W3C//DTD GRAMMAR 1.0//EN" "http://www.w3.org/TR/speech-grammar/grammar.dtd">
+
+<grammar xmlns="http://www.w3.org/2001/06/grammar"
+         xml:lang="en"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/06/grammar http://www.w3.org/TR/speech-grammar/grammar.xsd"
+         xml:base="http://speech.intuitlabs.com/asr"
+         version="1.0"
+         mode="voice"
+         tag-format="semantics/1.0.2006"
+         root="main"
+        >
+
+    <meta name="author" content="Wolf Paulus"/>
+
+
+    <rule id="A" scope="private">
+        <!-- ( I ) spend fifty dollars and eight two cents .. -->
+        <!-- Optional words that help identify an amount -->
+        <one-of>
+            <item>spent</item>
+            <item>paid</item>
+            <item>charged</item>
+            <item>
+                <ruleref special="NULL"/>
+            </item>
+        </one-of>
+        <!-- Using the built-in grammar to recognize dollars and cents -->
+        <ruleref uri="builtin:grammar/currency"/>
+        <tag>out.amount_value=rules.latest();</tag>
+        <tag>out.amount_score=meta.current().score;</tag>
+    </rule>
+
+
+    <rule id="B" scope="private">
+        <ruleref uri="file:///etc/speech/payment_account.grxml"/>
+    </rule>
+
+    <rule id="C" scope="private">
+        <ruleref uri="file:///etc/speech/payment_category.grxml"/>
+    </rule>
+
+    <rule id="D" scope="private">
+        <ruleref uri="file:///etc/speech/payment_method.grxml"/>
+    </rule>
+
+    <rule id="main" scope="public">
+        <item>
+            <ruleref uri="#A"/>
+            <tag>out.a=rules.latest();</tag>
+        </item>
+        <item repeat="1-3">
+            <one-of>
+                <item>
+                    <ruleref uri="#B"/>
+                    <tag>out.b=rules.latest();</tag>
+                </item>
+                <item>
+                    <ruleref uri="#C"/>
+                    <tag>out.c=rules.latest();</tag>
+                </item>
+                <item>
+                    <ruleref uri="#D"/>
+                    <tag>out.d=rules.latest();</tag>
+                </item>
+                <item>
+                    <ruleref special="NULL"/>
+                </item>
+            </one-of>
+        </item>
+    </rule>
+
+</grammar>
+
+
