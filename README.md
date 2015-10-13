@@ -51,9 +51,13 @@ exit
 ./test.py is a very simple python test script that sends a text string to the TTS engine 
 and streams out the resulting mp3 encoded voice sound.
 
-#!/usr/bin/python
 from array import array
 import sys
 import lv
+mp3=array('c',lv.tts("Hello World"))
 mp3.tofile(sys.stdout)
+
+
+￼python ./test.py > ~/test.mp3
+
 
